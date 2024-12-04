@@ -25,10 +25,8 @@ export class Main {
     };
 
     processRover = (rover: RoverInstructions): void => {
-        const result: RoverResult = {
-            position: rover.position,
-            lost: false,
-        };
+        const calculator = new MarsRoverCalculator(this.grid, rover);
+        const result = calculator.simulate();
         this.results.push(result);
     };
 }

@@ -1,4 +1,4 @@
-import { MarsRoverCalculator } from '..';
+import { Main, MarsRoverCalculator } from '..';
 import { handleMovement, handleRotation } from '../calculations';
 import { parseArguments, parsePosition, parseCommands } from '../parsing';
 import { GridDimensions, MarsRoverCommand, Movement, Position, RoverInstructions, RoverResult } from '../types';
@@ -212,7 +212,7 @@ describe('Unit Test: Calculations', () => {
     });
 });
 
-describe('MarsRoverCalculator', () => {
+describe('Unit Test:MarsRoverCalculator', () => {
     const testCases: {
         name: string;
         grid: GridDimensions;
@@ -290,5 +290,48 @@ describe('MarsRoverCalculator', () => {
             const result = calculator.simulate();
             expect(result).toEqual(expected);
         });
+    });
+});
+
+describe('End to End Test: Main loop', () => {
+    it('should handle multiple rovers', () => {
+        const grid = { width: 10, height: 10 };
+        const rovers: RoverInstructions[] = [
+            {
+                position: { x: 2, y: 3, orientation: 'E' },
+                commands: ['L', 'F', 'R', 'F', 'F'],
+            },
+            {
+                position: { x: 1, y: 1, orientation: 'N' },
+                commands: ['R', 'R', 'F', 'L', 'L', 'F'],
+            },
+            {
+                position: { x: 2, y: 3, orientation: 'E' },
+                commands: ['L', 'F', 'R', 'F', 'F'],
+            },
+            {
+                position: { x: 1, y: 1, orientation: 'N' },
+                commands: ['R', 'R', 'F', 'L', 'L', 'F'],
+            },
+            {
+                position: { x: 2, y: 3, orientation: 'E' },
+                commands: ['L', 'F', 'R', 'F', 'F'],
+            },
+            {
+                position: { x: 1, y: 1, orientation: 'N' },
+                commands: ['R', 'R', 'F', 'L', 'L', 'F'],
+            },
+        ];
+        const expected: RoverResult[] = [
+            { position: { x: 4, y: 4, orientation: 'E' }, lost: false },
+            { position: { x: 1, y: 1, orientation: 'N' }, lost: false },
+            { position: { x: 4, y: 4, orientation: 'E' }, lost: false },
+            { position: { x: 1, y: 1, orientation: 'N' }, lost: false },
+            { position: { x: 4, y: 4, orientation: 'E' }, lost: false },
+            { position: { x: 1, y: 1, orientation: 'N' }, lost: false },
+        ];
+        const main = new Main(grid, rovers);
+        main.run();
+        expect(main.results).toEqual(expected);
     });
 });
