@@ -8,7 +8,7 @@ describe('Mars Rover Command Parser', () => {
             expect(parsePosition('(2,3,E)')).toEqual({
                 x: 2,
                 y: 3,
-                orientation: 'E'
+                orientation: 'E',
             });
         });
 
@@ -16,7 +16,7 @@ describe('Mars Rover Command Parser', () => {
             expect(parsePosition('(2, 3, N)')).toEqual({
                 x: 2,
                 y: 3,
-                orientation: 'N'
+                orientation: 'N',
             });
         });
 
@@ -43,18 +43,18 @@ describe('Mars Rover Command Parser', () => {
             const expected: MarsRoverCommand = {
                 grid: {
                     width: 4,
-                    height: 8
+                    height: 8,
                 },
                 rovers: [
                     {
                         position: { x: 2, y: 3, orientation: 'E' },
-                        commands: ['L', 'F', 'R', 'F', 'F']
+                        commands: ['L', 'F', 'R', 'F', 'F'],
                     },
                     {
                         position: { x: 0, y: 2, orientation: 'N' },
-                        commands: ['F', 'F', 'L', 'F', 'R', 'F', 'F']
-                    }
-                ]
+                        commands: ['F', 'F', 'L', 'F', 'R', 'F', 'F'],
+                    },
+                ],
             };
             expect(parseArguments(args)).toEqual(expected);
         });
@@ -64,7 +64,6 @@ describe('Mars Rover Command Parser', () => {
             expect(() => parseArguments(args)).toThrow();
         });
 
-        
         it('should throw error when rover commands are missing', () => {
             const args = ['4', '8'];
             expect(() => parseArguments(args)).toThrow();
@@ -72,22 +71,19 @@ describe('Mars Rover Command Parser', () => {
 
         it('should throw error when rover commands are incomplete', () => {
             const args = ['4', '8', '(2,3,E)'];
-            expect(() => parseArguments(args)).toThrow('Each rover must have both a position and commands');
+            expect(() => parseArguments(args)).toThrow(
+                'Each rover must have both a position and commands'
+            );
         });
 
         it('should handle multiple rovers', () => {
-            const args = [
-                '4', '8',
-                '(2,3,E)', 'LFRFF',
-                '(0,2,N)', 'FFLFRFF',
-                '(1,1,S)', 'LRF'
-            ];
+            const args = ['4', '8', '(2,3,E)', 'LFRFF', '(0,2,N)', 'FFLFRFF', '(1,1,S)', 'LRF'];
             const result = parseArguments(args);
             expect(result.rovers).toHaveLength(3);
             expect(result.rovers[2].position).toEqual({
                 x: 1,
                 y: 1,
-                orientation: 'S'
+                orientation: 'S',
             });
         });
 

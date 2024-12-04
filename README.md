@@ -34,6 +34,7 @@ for the robot.
 The output should take the form:
 (4, 4, E)
 (0, 4, W) LOST
+
 Each line represents the final position and orientation of the robots of the form (x, y,
 orientation) and optionally whether the robot was lost.
 
