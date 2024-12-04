@@ -1,3 +1,4 @@
+import { handleMovement, handleRotation } from '../calculations';
 import { parseArguments, parsePosition, parseCommands } from '../parsing';
 import { MarsRoverCommand, Movement } from '../types';
 import '@jest/globals';
@@ -90,6 +91,122 @@ describe('Mars Rover Command Parser', () => {
         it('should validate grid dimensions are numbers', () => {
             const args = ['a', '8', '(2,3,E)', 'LFRFF'];
             expect(() => parseArguments(args)).toThrow();
+        });
+    });
+});
+
+describe('Unit Test: Calculations', () => {
+    describe('handleMovement', () => {
+        it('should handle movement north', () => {
+            expect(
+                handleMovement({ width: 4, height: 8 }, { x: 2, y: 3, orientation: 'N' })
+            ).toEqual({
+                x: 2,
+                y: 4,
+                orientation: 'N',
+            });
+        });
+
+        it('should handle movement east', () => {
+            expect(
+                handleMovement({ width: 4, height: 8 }, { x: 2, y: 3, orientation: 'E' })
+            ).toEqual({
+                x: 3,
+                y: 3,
+                orientation: 'E',
+            });
+        });
+
+        it('should handle movement south', () => {
+            expect(
+                handleMovement({ width: 4, height: 8 }, { x: 2, y: 3, orientation: 'S' })
+            ).toEqual({
+                x: 2,
+                y: 2,
+                orientation: 'S',
+            });
+        });
+
+        it('should handle movement west', () => {
+            expect(
+                handleMovement({ width: 4, height: 8 }, { x: 2, y: 3, orientation: 'W' })
+            ).toEqual({
+                x: 1,
+                y: 3,
+                orientation: 'W',
+            });
+        });
+
+        it('should throw error if movement would go off the grid', () => {
+            expect(() =>
+                handleMovement({ width: 4, height: 8 }, { x: 2, y: 8, orientation: 'N' })
+            ).toThrow();
+        });
+    });
+
+    describe('handleRotation', () => {
+        it('should handle rotation right from north', () => {
+            expect(handleRotation('R', { x: 2, y: 3, orientation: 'N' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'E',
+            });
+        });
+
+        it('should handle rotation left from north', () => {
+            expect(handleRotation('L', { x: 2, y: 3, orientation: 'N' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'W',
+            });
+        });
+
+        it('should handle rotation right from east', () => {
+            expect(handleRotation('R', { x: 2, y: 3, orientation: 'E' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'S',
+            });
+        });
+
+        it('should handle rotation left from east', () => {
+            expect(handleRotation('L', { x: 2, y: 3, orientation: 'E' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'N',
+            });
+        });
+
+        it('should handle rotation right from south', () => {
+            expect(handleRotation('R', { x: 2, y: 3, orientation: 'S' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'W',
+            });
+        });
+
+        it('should handle rotation left from south', () => {
+            expect(handleRotation('L', { x: 2, y: 3, orientation: 'S' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'E',
+            });
+        });
+
+        it('should handle rotation right from west', () => {
+            expect(handleRotation('R', { x: 2, y: 3, orientation: 'W' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'N',
+            });
+        });
+
+        it('should handle rotation left from west', () => {
+            expect(handleRotation('L', { x: 2, y: 3, orientation: 'W' })).toEqual({
+                x: 2,
+                y: 3,
+                orientation: 'S',
+            });
         });
     });
 });
