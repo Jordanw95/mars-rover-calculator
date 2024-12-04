@@ -17,6 +17,10 @@ The code base is split between two parts:
 * "entrypoint.ts" - handles the parsing of string arguments into the validated types
 * "index.ts" - contains the core logic for calculating the rover positions using validated types
 
+# Requirements
+
+Everything is run through docker so you will need docker installed and running on your machine.
+
 ### Running tests
 
 You can run tests with the following commands:
