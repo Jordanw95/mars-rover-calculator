@@ -1,16 +1,10 @@
 #!/bin/bash
 
-if [ "$1" = "test" ]; then
-    # Run tests
-    if [ "$2" = "watch" ]; then
-        docker-compose run --rm mars-rover npm run test:watch
-    else
-        docker-compose run --rm mars-rover npm test
-    fi
-elif [ "$1" ]; then
-    # If a file argument is provided, run that specific file
-    docker-compose run --rm mars-rover npm run run-file "src/$1"
-else
-    # Otherwise, start the development environment
-    docker-compose up --build
+if [ "$#" -eq 0 ]; then
+    default_args="4 8 (2,3,E) LFRFF (0,2,N) FFLFRFF"
+    echo "No arguments provided. Using default: $default_args"
+    set -- $default_args
 fi
+
+# Run the entrypoint script with the provided or default arguments
+docker-compose run --rm mars-rover npm run run-file "src/entrypoint.ts" -- "$@"
