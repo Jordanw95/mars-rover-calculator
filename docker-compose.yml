@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  mars-rover:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./jest.config.js:/app/jest.config.js
+    command: npm run dev 
