@@ -18,10 +18,11 @@ export class Main {
         this.rovers = rovers;
     }
 
-    run = (): void => {
+    run = (): RoverResult[] => {
         this.rovers.forEach(rover => {
             this.processRover(rover);
         });
+        return this.results;
     };
 
     processRover = (rover: RoverInstructions): void => {

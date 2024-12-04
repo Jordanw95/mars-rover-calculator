@@ -1,7 +1,14 @@
 import { Main, MarsRoverCalculator } from '..';
 import { handleMovement, handleRotation } from '../calculations';
-import { parseArguments, parsePosition, parseCommands } from '../parsing';
-import { GridDimensions, MarsRoverCommand, Movement, Position, RoverInstructions, RoverResult } from '../types';
+import { parseArguments, parsePosition, parseCommands, parseResultsToString } from '../parsing';
+import {
+    GridDimensions,
+    MarsRoverCommand,
+    Movement,
+    Position,
+    RoverInstructions,
+    RoverResult,
+} from '../types';
 import '@jest/globals';
 
 describe('Mars Rover Command Parser', () => {
@@ -92,6 +99,18 @@ describe('Mars Rover Command Parser', () => {
         it('should validate grid dimensions are numbers', () => {
             const args = ['a', '8', '(2,3,E)', 'LFRFF'];
             expect(() => parseArguments(args)).toThrow();
+        });
+    });
+
+    describe('parseResultsToString', () => {
+        it('should parse results to string', () => {
+            const results: RoverResult[] = [{ position: { x: 4, y: 4, orientation: 'E' }, lost: false }];
+            expect(parseResultsToString(results)).toEqual('(4, 4, E)');
+        });
+
+        it('should parse results to string when lost', () => {
+            const results: RoverResult[] = [{ position: { x: 0, y: 4, orientation: 'E' }, lost: true }];
+            expect(parseResultsToString(results)).toEqual('(0, 4, E) LOST');
         });
     });
 });
@@ -218,7 +237,7 @@ describe('Unit Test:MarsRoverCalculator', () => {
         grid: GridDimensions;
         rover: RoverInstructions;
         expected: RoverResult;
-        }[] = [
+    }[] = [
         {
             name: 'should move forward and rotate left and right',
             grid: { width: 4, height: 8 },
@@ -269,7 +288,25 @@ describe('Unit Test:MarsRoverCalculator', () => {
             grid: { width: 10, height: 10 },
             rover: {
                 position: { x: 5, y: 5, orientation: 'N' },
-                commands: ['F', 'R', 'F', 'R', 'F', 'L', 'F', 'L', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'L', 'F'],
+                commands: [
+                    'F',
+                    'R',
+                    'F',
+                    'R',
+                    'F',
+                    'L',
+                    'F',
+                    'L',
+                    'F',
+                    'F',
+                    'F',
+                    'F',
+                    'F',
+                    'F',
+                    'F',
+                    'L',
+                    'F',
+                ],
             },
             expected: { position: { x: 7, y: 10, orientation: 'N' }, lost: true },
         },
@@ -331,7 +368,7 @@ describe('End to End Test: Main loop', () => {
             { position: { x: 1, y: 1, orientation: 'N' }, lost: false },
         ];
         const main = new Main(grid, rovers);
-        main.run();
-        expect(main.results).toEqual(expected);
+        const results = main.run();
+        expect(results).toEqual(expected);
     });
 });

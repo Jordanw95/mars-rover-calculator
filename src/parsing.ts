@@ -1,4 +1,4 @@
-import { MarsRoverCommand, Orientation, Movement } from './types';
+import { MarsRoverCommand, Orientation, Movement, RoverResult } from './types';
 
 export const parsePosition = (
     positionStr: string
@@ -77,4 +77,13 @@ export const parseArguments = (args: string[]): MarsRoverCommand => {
         },
         rovers,
     };
+};
+
+export const parseResultsToString = (results: RoverResult[]): string => {
+    return results
+        .map(
+            result =>
+                `(${result.position.x}, ${result.position.y}, ${result.position.orientation})${result.lost ? ' LOST' : ''}`
+        )
+        .join('\n');
 };
