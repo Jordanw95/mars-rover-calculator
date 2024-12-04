@@ -1,6 +1,7 @@
+import { MarsRoverCalculator } from '..';
 import { handleMovement, handleRotation } from '../calculations';
 import { parseArguments, parsePosition, parseCommands } from '../parsing';
-import { MarsRoverCommand, Movement } from '../types';
+import { GridDimensions, MarsRoverCommand, Movement, Position, RoverInstructions, RoverResult } from '../types';
 import '@jest/globals';
 
 describe('Mars Rover Command Parser', () => {
@@ -207,6 +208,87 @@ describe('Unit Test: Calculations', () => {
                 y: 3,
                 orientation: 'S',
             });
+        });
+    });
+});
+
+describe('MarsRoverCalculator', () => {
+    const testCases: {
+        name: string;
+        grid: GridDimensions;
+        rover: RoverInstructions;
+        expected: RoverResult;
+        }[] = [
+        {
+            name: 'should move forward and rotate left and right',
+            grid: { width: 4, height: 8 },
+            rover: {
+                position: { x: 2, y: 3, orientation: 'E' },
+                commands: ['L', 'F', 'R', 'F', 'F'],
+            },
+            expected: { position: { x: 4, y: 4, orientation: 'E' }, lost: false },
+        },
+        {
+            name: 'should handle multiple rotations',
+            grid: { width: 5, height: 5 },
+            rover: {
+                position: { x: 1, y: 1, orientation: 'N' },
+                commands: ['R', 'R', 'F', 'L', 'L', 'F'],
+            },
+            expected: { position: { x: 1, y: 1, orientation: 'N' }, lost: false },
+        },
+        {
+            name: 'should handle edge of grid',
+            grid: { width: 3, height: 3 },
+            rover: {
+                position: { x: 0, y: 0, orientation: 'W' },
+                commands: ['F'],
+            },
+            expected: { position: { x: 0, y: 0, orientation: 'W' }, lost: true },
+        },
+        {
+            name: 'should handle complex path',
+            grid: { width: 10, height: 10 },
+            rover: {
+                position: { x: 5, y: 5, orientation: 'N' },
+                commands: ['F', 'R', 'F', 'R', 'F', 'L', 'F', 'L', 'F'],
+            },
+            expected: { position: { x: 7, y: 6, orientation: 'N' }, lost: false },
+        },
+        {
+            name: 'should handle complex path to get lost',
+            grid: { width: 10, height: 10 },
+            rover: {
+                position: { x: 5, y: 5, orientation: 'N' },
+                commands: ['F', 'R', 'F', 'R', 'F', 'L', 'F', 'L', 'F', 'F', 'F', 'F', 'F', 'F'],
+            },
+            expected: { position: { x: 7, y: 10, orientation: 'N' }, lost: true },
+        },
+        {
+            name: 'should handle complex path to get lost return last position before lost',
+            grid: { width: 10, height: 10 },
+            rover: {
+                position: { x: 5, y: 5, orientation: 'N' },
+                commands: ['F', 'R', 'F', 'R', 'F', 'L', 'F', 'L', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'L', 'F'],
+            },
+            expected: { position: { x: 7, y: 10, orientation: 'N' }, lost: true },
+        },
+        {
+            name: 'should handle multiple full rotations',
+            grid: { width: 10, height: 10 },
+            rover: {
+                position: { x: 5, y: 5, orientation: 'N' },
+                commands: ['R', 'R', 'R', 'R'],
+            },
+            expected: { position: { x: 5, y: 5, orientation: 'N' }, lost: false },
+        },
+    ];
+
+    testCases.forEach(({ name, grid, rover, expected }) => {
+        it(name, () => {
+            const calculator = new MarsRoverCalculator(grid, rover);
+            const result = calculator.simulate();
+            expect(result).toEqual(expected);
         });
     });
 });

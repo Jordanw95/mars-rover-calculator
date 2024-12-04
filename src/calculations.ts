@@ -17,7 +17,12 @@ const calculateNewPosition = (position: Position): Position => {
 export const handleMovement = (grid: GridDimensions, position: Position): Position => {
     const newPosition = calculateNewPosition(position);
 
-    if (newPosition.x < 0 || newPosition.x > grid.width || newPosition.y < 0 || newPosition.y > grid.height) {
+    if (
+        newPosition.x < 0 ||
+        newPosition.x > grid.width ||
+        newPosition.y < 0 ||
+        newPosition.y > grid.height
+    ) {
         throw new Error('Rover has fallen off the grid');
     }
 
@@ -29,7 +34,7 @@ const DIRECTION_MAP: Record<Orientation, number> = {
     E: 1,
     S: 2,
     W: 3,
-}
+};
 
 const REVERSE_DIRECTION_MAP: Record<number, Orientation> = {
     0: 'N',
@@ -42,10 +47,10 @@ export const handleRotation = (command: Movement, position: Position): Position 
     const { orientation } = position;
     const direction = DIRECTION_MAP[orientation];
     if (command === 'L') {
-        const newDirection = ((direction - 1 + 4) % 4);
+        const newDirection = (direction - 1 + 4) % 4;
         return { ...position, orientation: REVERSE_DIRECTION_MAP[newDirection] };
     } else {
-        const newDirection = ((direction + 1) % 4);
+        const newDirection = (direction + 1) % 4;
         return { ...position, orientation: REVERSE_DIRECTION_MAP[newDirection] };
     }
 };

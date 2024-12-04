@@ -49,12 +49,16 @@ export class MarsRoverCalculator {
         this.currentPositon = rover.position;
     }
 
-    simulate = (): void => {
+    simulate = (): RoverResult => {
         this.commands.forEach(command => {
             if (!this.lost) {
                 this.handleCommand(command);
             }
         });
+        return {
+            position: this.currentPositon,
+            lost: this.lost,
+        };
     };
 
     handleCommand = (command: Movement): void => {
