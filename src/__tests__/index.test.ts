@@ -5,7 +5,6 @@ import {
     GridDimensions,
     MarsRoverCommand,
     Movement,
-    Position,
     RoverInstructions,
     RoverResult,
 } from '../types';
